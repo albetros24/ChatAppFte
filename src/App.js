@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
 
+
+import './App.css';
+import Header from './components/Header';
+// import Chat from './components/chat';
+import Box from "@mui/material/Box";
+import Container from "@mui/material/Container";
+import { io } from 'socket.io-client'
+import Cookies from 'js-cookies'
+import { useEffect, useState } from 'react';
+import { Outlet } from "react-router-dom";
 function App() {
+
+  const [socket, setSocket] = useState(null);
+  const [userId, setUserId] = useState(null);
+  useEffect(() => {
+    
+    setSocket(io("http://localhost:8000"));
+    const  _userId=Cookies.getItem('userId');
+   if(userId)
+   {
+     setUserId(_userId)
+   }
+  }, [])
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      
+
+        <Container>
+        <Header socket={socket} userId={userId}   setUserId={setUserId}  />
+      
+          <Outlet context={{socket,userId}} />
+      
+      </Container>
+    </>
+ 
   );
 }
 
